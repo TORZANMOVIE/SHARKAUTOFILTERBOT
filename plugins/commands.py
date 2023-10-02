@@ -69,7 +69,7 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML
         )
         return
-   if AUTH_CHANNEL and not await is_subscribed(client, message):
+    if AUTH_CHANNEL and not await is_subscribed(client, message):
         try:
             invite = (await client.create_chat_invite_link(
             chat_id=int(AUTH_CHANNEL),
