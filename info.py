@@ -110,7 +110,7 @@ SUPPORT_CHAT = environ.get('SUPPORT_CHAT', 'THE_ALL_Support')
 
 P_TTI_SHOW_OFF = is_enabled((environ.get('P_TTI_SHOW_OFF', "False")), False)
 
-IMDB = is_enabled((environ.get('IMDB', "True")), True)
+IMDB = is_enabled((environ.get('IMDB', "False")), False)
 
 AUTO_FFILTER = is_enabled((environ.get('AUTO_FFILTER', "True")), True)
 
