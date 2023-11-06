@@ -79,7 +79,6 @@ async def start(client, message):
         btn = [
             [
                 "🔭 J͟O͟I͟N͟ O͟U͟R͟ C͟H͟A͟N͟N͟E͟L͟ T͟O͟ U͟S͟E͟ O͟U͟R͟ B͟O͟T͟ 🔭", url=invite_link.invite_link
-                )
             ]
         ]
 
